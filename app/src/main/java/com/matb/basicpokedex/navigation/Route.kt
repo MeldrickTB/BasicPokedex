@@ -6,4 +6,5 @@ package com.matb.basicpokedex.navigation
 object Route {
     const val HOME = "home"
     const val DETAIL = "detail"
+    const val LOGIN = "login"
 }

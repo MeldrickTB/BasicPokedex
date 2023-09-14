@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,8 +33,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.matb.basicpokedex.detail.presentation.DetailScreen
 import com.matb.basicpokedex.home.presentation.HomeScreen
+import com.matb.basicpokedex.login.presentation.LoginScreen
 import com.matb.basicpokedex.navigation.Route.DETAIL
 import com.matb.basicpokedex.navigation.Route.HOME
+import com.matb.basicpokedex.navigation.Route.LOGIN
 
 import com.matb.basicpokedex.ui.theme.BasicPokedexTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,11 +52,17 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = HOME) {
+                    NavHost(navController = navController, startDestination = LOGIN) {
                         composable(HOME) {
                             HomeScreen(onPokemonClick = {
-                                navController.navigate("$DETAIL/$it")
-                            })
+                                navController.navigate("$DETAIL/$it") {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+
+                                    launchSingleTop = true
+                                }
+                            },  navController)
                         }
                         composable(
                             "$DETAIL/{pokemonId}",
@@ -66,6 +75,12 @@ class MainActivity : ComponentActivity() {
                             DetailScreen(onBack = {
                                 navController.navigateUp()
                             })
+                        }
+
+                        composable(LOGIN){
+                            LoginScreen(onLoginClick = {
+                                navController.navigate(HOME)
+                            }, navController)
                         }
                     }
                 }

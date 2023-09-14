@@ -1,5 +1,6 @@
 package com.matb.basicpokedex.home.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.matb.basicpokedex.home.presentation.components.PokemonCard
 
 /**
@@ -36,6 +39,7 @@ import com.matb.basicpokedex.home.presentation.components.PokemonCard
 @Composable
 fun HomeScreen(
     onPokemonClick: (Int) -> Unit,
+    navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -45,12 +49,17 @@ fun HomeScreen(
         }
     }
 
+    BackHandler {
+        navController.popBackStack()
+    }
+
     if (state.pokemons.isNotEmpty()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background),
         ) {
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
